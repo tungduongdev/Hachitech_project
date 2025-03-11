@@ -1,7 +1,7 @@
 import About from "@/components/About";
 import Banner from "@/components/Banner";
 import MainFeatures from "@/components/MainFeatures";
-import Products from "@/components/Products";
+import Products from "@/app/products/Products";
 import Slidebar from "@/components/Slidebar";
 import Layout from "@/components/Layout";
 import { Suspense } from "react";
