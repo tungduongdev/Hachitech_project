@@ -4,7 +4,7 @@ import { StatusCodes } from "http-status-codes"
 import apiError from "../utils/apiError.js"
 import 'dotenv/config'
 import { env } from "../configs/environment.js"
-import { jwtProvider } from "../providers/JwtProvider.js"
+import { jwtProvider } from "../providers/jwtProvider.js"
 
 const login = async (reqBody) => {
   try {

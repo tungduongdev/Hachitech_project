@@ -11,7 +11,7 @@ async function getProducts() {
   }
   try {
     // Thêm absolute URL và các option fetch
-    const res = await fetch('http://localhost:5000/api/v1/products', {
+    const res = await fetch('http://66.42.52.15:5000/api/v1/products', {
       cache: 'no-store',
       next: { revalidate: 0 }, // Luôn lấy dữ liệu mới
       method: 'GET',
