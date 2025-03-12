@@ -3,7 +3,7 @@ name: Deploy Fullstack to VPS
 on:
   push:
     branches:
-      - master  # Hoặc nhánh bạn đang sử dụng
+      - master  # Hoặc branch bạn muốn deploy
 
 jobs:
   deploy:
@@ -13,26 +13,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup SSH Key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_SSH_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+      - name: Install SSH Client & sshpass
+        run: sudo apt-get install -y sshpass
 
       - name: Deploy Backend & Frontend
         run: |
-          ssh -i ~/.ssh/id_rsa root@${{ secrets.HOST }} << 'EOF'
-            # Chạy trong VPS
+          sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.USER_NAME }}@${{ secrets.HOST }} << 'EOF'
+            # Chạy trên VPS
             cd /home/Hachitech_project
 
-            # Deploy backend
+            # Deploy Backend
             cd backend_hachitech
             git pull origin master
             npm install
             pm2 restart all  # Hoặc restart server nếu cần
 
-            # Deploy frontend
+            # Deploy Frontend
             cd ../nextjs-app
             git pull origin master
             npm install
