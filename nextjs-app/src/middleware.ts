@@ -3,6 +3,7 @@ import { jwtDecode } from 'jwt-decode';
 
 export function middleware(req: NextRequest) {
   const cookieHeader = req.headers.get('cookie');
+  console.log('Cookie Header:', cookieHeader);
   const accessToken = cookieHeader
     ?.split('; ')
     .find(c => c.startsWith('accessToken='))
