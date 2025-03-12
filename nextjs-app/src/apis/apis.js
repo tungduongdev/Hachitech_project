@@ -1,7 +1,7 @@
 "use client"
 import axios from 'axios';
 
-
+const API_URL = 'http://localhost:5000/api/v1';
 export const loginApi = async (data) => {
   try {
     const response = await axios.post(`http://localhost:5000/api/v1/users/login`, data, {

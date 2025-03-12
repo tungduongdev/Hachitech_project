@@ -18,7 +18,7 @@ const START_SERVER = () => {
 
   //enable cors
   app.use(cors({
-    origin: "http://localhost:3000", 
+    origin: true, 
     credentials: true
   }))
   //enable req.body json data
