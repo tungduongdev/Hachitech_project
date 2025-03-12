@@ -16,7 +16,7 @@ jobs:
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.VPS_SSH_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
 
@@ -37,7 +37,7 @@ jobs:
             git pull origin master
             npm install
             npm run build
-            cp -r dist/* /var/www/html/
+            cp -r .next/static/* /var/www/html/
 
             echo "✅ Deployment completed!"
           EOF
