@@ -2,16 +2,18 @@
 import axios from 'axios';
 
 const API_URL = 'http://66.42.52.15/api/v1';
+
 export const loginApi = async (data) => {
   try {
     const response = await axios.post(`${API_URL}/users/login`, data, {
-      withCredentials: true
+      withCredentials: true,
     });
+    console.log("Cookie sau khi login:", document.cookie); // Kiểm tra cookie trong frontend
     return response;
   } catch (error) {
     console.error("Lỗi khi đăng nhập:", error);
   }
-}
+};
 
 export const getProductsApi = async () => {
   try {
