@@ -21,19 +21,16 @@ jobs:
           sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.USER_NAME }}@${{ secrets.HOST }} << 'EOF'
             # Chạy trên VPS
             cd /home/Hachitech_project
-
             # Deploy Backend
             cd backend_hachitech
             git pull origin master
             npm install
             pm2 restart all  # Hoặc restart server nếu cần
-
             # Deploy Frontend
             cd ../nextjs-app
             git pull origin master
             npm install
             npm run build
             cp -r .next/static/* /var/www/html/
-
             echo "✅ Deployment completed!"
           EOF
