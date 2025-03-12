@@ -10,7 +10,7 @@ Router.route('/register')
 Router.route('/login')
   .post(userValidation.login, userController.login)
 Router.route('/')
-  .get(authMiddlewere.isAuthorized, userController.getAll)
+  .get(userController.getAll)
 Router.route('/verify')
   .put(userValidation.verifyAccount, userController.verifyAccount)
 

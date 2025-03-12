@@ -5,10 +5,10 @@ import apiError from '../utils/apiError.js'
 
 const isAuthorized = async (req, res, next) => {
   // lấy access token từ cookie
-  // console.log(req)
-  // console.log('Cookies:', req.cookies);
+ console.log(req)
+  console.log('Cookies:', req.cookies);
   const accessToken = req.cookies?.accessToken
-  // console.log('Access Token:', accessToken);
+  console.log('Access Token:', accessToken);
   // nếu không có access token thì trả về lỗi
   if (!accessToken) {
     next(new apiError(StatusCodes.UNAUTHORIZED, 'Access token not found'))

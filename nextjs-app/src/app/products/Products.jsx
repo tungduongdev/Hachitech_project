@@ -3,21 +3,14 @@ import { cookies } from 'next/headers';
 
 
 async function getProducts() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('accessToken')?.value;
-  console.log('Access token:', token);
-  if (!token) {
-    throw new Error('Access token not found');
-  }
   try {
     // Thêm absolute URL và các option fetch
-    const res = await fetch('http://66.42.52.15:5000/api/v1/products', {
+    const res = await fetch('http://66.42.52.15/api/v1/products', {
       cache: 'no-store',
       next: { revalidate: 0 }, // Luôn lấy dữ liệu mới
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
       },
     });
     

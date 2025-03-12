@@ -1,10 +1,10 @@
 "use client"
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/v1';
+const API_URL = 'http://66.42.52.15/api/v1';
 export const loginApi = async (data) => {
   try {
-    const response = await axios.post(`http://localhost:5000/api/v1/users/login`, data, {
+    const response = await axios.post(`${API_URL}/users/login`, data, {
       withCredentials: true
     });
     return response;
@@ -15,7 +15,7 @@ export const loginApi = async (data) => {
 
 export const getProductsApi = async () => {
   try {
-    const response = await axios.get(`http://localhost:5000/api/v1/products`, {
+    const response = await axios.get(`${API_URL}/products`, {
       withCredentials: true
     });
     return response;
@@ -26,7 +26,7 @@ export const getProductsApi = async () => {
 
 export const deleteProductApi = async (id) => {
   try {
-    const response = await axios.delete(`http://localhost:5000/api/v1/products/delete/${id}`, {
+    const response = await axios.delete(`${API_URL}/products/delete/${id}`, {
       withCredentials: true
     });
     return response;
@@ -37,7 +37,7 @@ export const deleteProductApi = async (id) => {
 
 export const addProductApi = async (data) => {
   try {
-    const response = await axios.post(`http://localhost:5000/api/v1/products/create`, data, {
+    const response = await axios.post(`${API_URL}/products/create`, data, {
       withCredentials: true
     });
     return response;
@@ -48,7 +48,7 @@ export const addProductApi = async (data) => {
 
 export const updateProductApi = async (id, data) => {
   try {
-    const response = await axios.put(`http://localhost:5000/api/v1/products/update/${id}`, data, {
+    const response = await axios.put(`${API_URL}/products/update/${id}`, data, {
       withCredentials: true
     });
     return response;
