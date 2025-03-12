@@ -6,14 +6,10 @@ const login = async (req, res, next) => {
     const result = await userService.login(req.body)
     res.cookie('accessToken', result.accessToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'none',
       maxAge: ms('1d')
     })
     res.cookie('refreshToken', result.refreshToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'none',
       maxAge: ms('7d')
     })
     res.status(200).json(result)
