@@ -58,3 +58,14 @@ export const updateProductApi = async (id, data) => {
     console.error("Lỗi khi cập nhật sản phẩm:", error);
   }
 }
+
+export const getProductByIdApi = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/products/${id}`, {
+      withCredentials: true
+    });
+    return response;
+  } catch (error) {
+    console.error("Lỗi khi lấy sản phẩm theo ID:", error);
+  }
+}

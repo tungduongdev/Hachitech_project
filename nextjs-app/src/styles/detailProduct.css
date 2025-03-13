@@ -1,0 +1,263 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.product-detail-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 50px auto;
+  padding: 0 20px;
+}
+
+.product-info {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-left: 30px;
+  margin-top: 100px;
+}
+
+.product-images {
+  width: 50%;
+  margin-top: 100px;
+}
+
+.product-images img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-info h1 {
+  color: #098178;
+  font-size: 28px;
+}
+
+.product-rating {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  color: #666;
+}
+
+.product-rating span::before {
+  content: '';
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
+  background-color: #FFD700;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.product-price {
+  padding: 10px 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.current-price {
+  font-size: 24px;
+  font-weight: 700;
+  color: #e53935;
+}
+
+.product-description {
+  line-height: 1.6;
+  color: #555;
+}
+
+/* Color options */
+.product-colors h3, .product-quantity h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.color-options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.color-option {
+  padding: 8px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 30px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.color-option:hover {
+  background-color: #f5f5f5;
+}
+
+.color-option.selected {
+  border-color: #1976d2;
+  color: #1976d2;
+  font-weight: bold;
+}
+
+/* Quantity selector */
+.quantity-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quantity-selector button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background: white;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.quantity-selector button:hover:not(:disabled) {
+  background-color: #f5f5f5;
+}
+
+.quantity-selector button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.quantity-selector span {
+  font-size: 16px;
+  min-width: 30px;
+  text-align: center;
+}
+
+.quantity-selector span:last-child {
+  margin-left: 10px;
+  color: #757575;
+  font-size: 14px;
+}
+
+/* Product actions */
+.product-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.product-actions button {
+  padding: 12px 24px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.product-actions button:first-child {
+  background-color: #1976d2;
+  color: white;
+  flex: 1;
+}
+
+.product-actions button:first-child:hover {
+  background-color: #1565c0;
+}
+
+.product-actions button:first-child.added {
+  background-color: #4caf50;
+}
+
+.product-actions button:last-child {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  font-size: 20px;
+  line-height: 1;
+  padding: 8px 16px;
+}
+
+.product-actions button:last-child:hover {
+  background-color: #f5f5f5;
+}
+
+/* Loading state */
+.product-detail-container > div:only-child {
+  width: 100%;
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: #666;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+  .product-detail-container {
+      max-width: 900px;
+  }
+  
+  .product-info h1 {
+      font-size: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .product-detail-container {
+      flex-direction: column;
+      gap: 30px;
+  }
+  
+  .product-info {
+      width: 100%;
+      margin-left: 0;
+      order: 2;
+  }
+  
+  .product-images {
+      width: 100%;
+      margin-top: 30px;
+      order: 1;
+  }
+  
+  .product-actions {
+      flex-direction: column;
+  }
+  
+  .product-actions button:last-child {
+      width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-detail-container {
+      padding: 0 15px;
+  }
+  
+  .color-option {
+      padding: 6px 12px;
+      font-size: 12px;
+  }
+  
+  .product-actions button {
+      padding: 10px 16px;
+      font-size: 14px;
+  }
+  
+  .current-price {
+      font-size: 20px;
+  }
+  
+  .product-info h1 {
+      font-size: 22px;
+  }
+}

@@ -42,8 +42,8 @@ const getProductById = async (req, res, next) => {
 const updateProduct = async (req, res, next) => {
   try {
     const productImg = req.file
-    //console.log("productImg",productImg)
-    //console.log(req.body)
+    // console.log("productImg controller",productImg)
+    // console.log("controller",req.body)
     const updateProduct = await productService.updateProduct(req.params.id, req.body, productImg)
     res.status(StatusCodes.OK).json(updateProduct)
   } catch (error) {

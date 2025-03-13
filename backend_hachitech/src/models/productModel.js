@@ -11,6 +11,8 @@ const productValidationSchema = Joi.object({
   imgUrl: Joi.string().allow("", null),
   price: Joi.number().required().default(0),
   isActive: Joi.boolean().default(true),
+  description: Joi.string().allow("", null),
+  colors: Joi.array().items(Joi.string()).default([]),
   createdAt: Joi.date().timestamp("javascript").default(Date.now),
   updatedAt: Joi.date().timestamp("javascript").default(null)
 });
@@ -30,9 +32,13 @@ const createNewProduct = async (newProduct) => {
       productName: newProduct.productName,
       imgUrl: newProduct.imgUrl,
       price: newProduct.price,
+      description: newProduct.description,
+      colors: newProduct.colors,
       isActive: true,
       createdAt: Date.now(),
     };
+
+    console.log("newProduct model", newProduct)
     const { error } = productValidationSchema.validate(productData)
     if (error) throw new Error(`Validation error: ${error.details[0].message}`)
 
@@ -79,6 +85,8 @@ const updateProduct = async (id, updatedProduct) => {
       productName: updatedProduct.productName,
       imgUrl: updatedProduct.imgUrl,
       price: updatedProduct.price,
+      description: updatedProduct.description,
+      colors: updatedProduct.colors,
       isActive: updatedProduct.isActive,
       updatedAt: Date.now()
     };

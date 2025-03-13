@@ -1,6 +1,4 @@
-// app/products/page.jsx
-import { cookies } from 'next/headers';
-
+import Link from "next/link";
 
 async function getProducts() {
   try {
@@ -16,9 +14,8 @@ async function getProducts() {
     
     if (!res.ok) {
       console.error('API responded with status:', res.status);
-      return []; // Trả về mảng rỗng thay vì ném lỗi
+      return [];
     }
-    
     return res.json();
   } catch (error) {
     console.error('Error fetching products:', error);
@@ -28,7 +25,7 @@ async function getProducts() {
 
 export default async function ProductsPage() {
   const products = await getProducts();
-  
+  console.log(products);
   return (
     <main className="main-body">
       <div className="container">
@@ -37,13 +34,21 @@ export default async function ProductsPage() {
             <h3>Our Products</h3>
             <p>Check out our latest collection</p>
           </div>
+          
           <div className="product-list">
             {products.map((product) => (
-              <div key={product._id} className="product-item">
-                <img src={product.imgUrl} alt={product.name} />
-                <h4>{product.productName}</h4>
-                <p>${product.price}</p>
-              </div>
+              <Link className="product-item" key={product._id} href={`/product/${product._id}`}>
+                <div className="product-card">
+                  <div className="product-image">
+                    <img src={product.imgUrl} alt={product.productName} />
+                  </div>
+                  <div className="product-info">
+                    <h4 className="product-title">{product.productName}</h4>
+                    <p className="product-price">${product.price.toLocaleString()}</p>
+                    <p className="product-description">{product.description || "Không có mô tả"}</p>
+                  </div>
+                </div>
+              </Link>
             ))}
           </div>
         </section>

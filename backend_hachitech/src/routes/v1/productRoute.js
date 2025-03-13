@@ -13,7 +13,7 @@ Router.route('/')
 Router.route('/delete/:id')
   .delete(authMiddlewere.isAuthorized,authMiddlewere.isAuthorizedAndAdmin, productController.deleteProduct)
 Router.route('/:id')
-  .get(authMiddlewere.isAuthorized, productController.getProductById)
+  .get(productController.getProductById)
 Router.route('/update/:id')
   .put(authMiddlewere.isAuthorized,authMiddlewere.isAuthorizedAndAdmin, multerUploadMiddleware.upload.single('imgUrl'),productValidation.updateProduct, productController.updateProduct)
 

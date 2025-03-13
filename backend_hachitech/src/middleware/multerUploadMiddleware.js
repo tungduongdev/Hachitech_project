@@ -5,7 +5,7 @@ import { ALLOW_COMMON_FILE_TYPES, LIMIT_COMMON_FILE_SIZE } from '../utils/valida
 
 // function kiểm tra file
 const customFileFilter = (req, file, callback) => {
-  console.log(file)
+  //console.log(file)
   // đối với multer kiểm tra kiểu file thì sử dụng mimetype
   if (!ALLOW_COMMON_FILE_TYPES.includes(file.mimetype)) {
     const errorMessage = 'File type is invalid. Only accept jpg, jpeg and png'

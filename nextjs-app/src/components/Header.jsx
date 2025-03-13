@@ -58,7 +58,7 @@ function Header() {
         </div>
         <div className="menu">
           <ul className="menu-list">
-            <li>Home</li>
+            <Link href={"/"}><li>Home</li></Link>
             <li>Shop</li>
             <li>Pages</li>
             <li>Blog</li>

@@ -19,23 +19,10 @@ function Slidebar() {
     }
   };
 
-  // Thiết lập các hàm điều khiển slide
-  const scrollLeft = () => {
-    if (slideRef.current) {
-      slideRef.current.scrollLeft -= 220;
-    }
-  };
-
-  const scrollRight = () => {
-    if (slideRef.current) {
-      slideRef.current.scrollLeft += 220;
-    }
-  };
-
   return (
     <div>
       <section className="slidebar">
-        <div className="container slidebar-container">
+        <div className="container2 slidebar-container">
           <div 
             className="slidebar-content" 
             id="slidebar-content"

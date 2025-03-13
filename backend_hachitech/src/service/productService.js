@@ -5,19 +5,21 @@ import { CloudinaryProvider } from "../providers/cloudinaryProvider.js"
 
 const createNew = async (reqBody, productImg) => {
   try {
-    console.log("service", productImg)
-    let imgUrl = ''
+    //console.log("service", productImg)
+    let imgUrl = []
 
     if (productImg) {
       const uploadResult = await CloudinaryProvider.streamUpload(productImg.buffer, 'products')
       imgUrl = uploadResult.secure_url
-      console.log("uploadResult", uploadResult)
+      //console.log("uploadResult", uploadResult)
     }
     const newProduct = {
       ...reqBody,
       imgUrl,
       slug: slugify(reqBody.productName)
     }
+
+    //console.log("newProduct", newProduct)
 
     const createdProduct = await productModel.createNewProduct(newProduct)
     return createdProduct
@@ -60,17 +62,20 @@ const updateProduct = async (id, updatedProduct, productImg) => {
   if (productImg) {
       const uploadResult = await CloudinaryProvider.streamUpload(productImg.buffer, 'products')
       imgUrl = uploadResult.secure_url
-      console.log("uploadResult", uploadResult)
+  } else {
+    imgUrl = updatedProduct.imgUrl
   }
 
   try {
     const updatedProductData = {
       ...updatedProduct,
       slug: slugify(updatedProduct.productName),
+      description: updatedProduct.description,
+      colors: updatedProduct.colors,
       imgUrl
     }
 
-    console.log(updatedProductData)
+    //console.log(updatedProductData)
 
     const result = await productModel.updateProduct(id, updatedProductData)
     return updatedProductData
