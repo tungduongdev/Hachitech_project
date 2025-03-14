@@ -474,3 +474,129 @@ File CSS riêng cho Slidebar
     padding: 0 20px;
   }
 }
+.main-header {
+  position: relative;
+  padding: 15px 0;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.menu-list {
+  display: flex;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-list li {
+  margin: 0 15px;
+  cursor: pointer;
+  padding: 15px 0;
+  position: relative;
+}
+
+
+.menu-item-with-submenu h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: normal;
+  position: relative;
+}
+
+.sub-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: -93px;
+  background-color: #fff;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  min-width: 500px;
+  z-index: 100;
+  border-radius: 4px;
+  padding: 10px 0;
+}
+
+.sub-menu ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sub-menu ul li {
+  margin: 0;
+  padding: 0;
+}
+
+.sub-menu ul li a {
+  display: block;
+  padding: 8px 20px;
+  color: #333;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.sub-menu ul li:hover {
+  background-color: #f5f5f5;
+  color: #000;
+}
+
+/* Hover effect */
+.menu-item-with-submenu:hover .sub-menu {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive menu */
+.hidden-menu {
+  display: none;
+}
+
+.menu-items-rp {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .hidden-menu {
+    display: block;
+  }
+  
+  .menu {
+    display: none;
+  }
+  
+  .menu-items-rp.active {
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+  }
+  
+  .menu-list-rp {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .menu-list-rp li {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+  }
+}

@@ -1,7 +1,7 @@
 "use client"
 import axios from 'axios';
 
-const API_URL = 'http://66.42.52.15/api/v1';
+const API_URL = 'http://localhost:5000/api/v1';
 
 export const loginApi = async (data) => {
   try {
@@ -15,6 +15,19 @@ export const loginApi = async (data) => {
   }
 };
 
+export const logoutApi = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/users/logout`, {
+      withCredentials: true,
+    });
+    console.log("Cookie sau khi logout:", document.cookie); // Kiểm tra cookie trong frontend
+    return response;
+  } catch (error) {
+    console.error("Lỗi khi đăng xuất:", error);
+  }
+}
+
+//products api
 export const getProductsApi = async () => {
   try {
     const response = await axios.get(`${API_URL}/products`, {
@@ -67,5 +80,49 @@ export const getProductByIdApi = async (id) => {
     return response;
   } catch (error) {
     console.error("Lỗi khi lấy sản phẩm theo ID:", error);
+  }
+}
+
+// API cho danh mục
+export const addCategoryApi = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/categories/create`, data, {
+      withCredentials: true
+    });
+    return response;
+  } catch (error) {
+    console.error("Lỗi khi thêm danh mục:", error);
+  }
+}
+export const getCategoriesApi = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/categories`, {
+      withCredentials: true
+    });
+    return response;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách danh mục:", error);
+  }
+}
+
+export const deleteCategoryApi = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/categories/delete/${id}`, {
+      withCredentials: true
+    });
+    return response;
+  } catch (error) {
+    console.error("Lỗi khi xóa danh mục:", error);
+  }
+}
+
+export const updateCategoryApi = async (id, data) => {
+  try {
+    const response = await axios.put(`${API_URL}/categories/update/${id}`, data, {
+      withCredentials: true
+    });
+    return response;
+  } catch (error) {
+    console.error("Lỗi khi cập nhật danh mục:", error);
   }
 }

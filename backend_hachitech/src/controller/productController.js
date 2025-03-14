@@ -50,10 +50,20 @@ const updateProduct = async (req, res, next) => {
     next(error)
   }
 }
+
+const getProductsByCategoryId = async (req, res, next) => {
+  try {
+    const products = await productService.getProductsByCategoryId(req.params.id)
+    res.status(OK).json(products)
+  } catch (error) {
+    next(error)
+  }
+}
 export const productController = {
   createNew,
   getAll,
   deleteProduct,
   getProductById,
-  updateProduct
+  updateProduct,
+  getProductsByCategoryId
 }

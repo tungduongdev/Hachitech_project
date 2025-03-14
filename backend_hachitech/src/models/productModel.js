@@ -13,6 +13,7 @@ const productValidationSchema = Joi.object({
   isActive: Joi.boolean().default(true),
   description: Joi.string().allow("", null),
   colors: Joi.array().items(Joi.string()).default([]),
+  categoryId: Joi.array().items(Joi.string().length(24).pattern(/^[0-9a-fA-F]{24}$/)).required(),
   createdAt: Joi.date().timestamp("javascript").default(Date.now),
   updatedAt: Joi.date().timestamp("javascript").default(null)
 });
@@ -34,6 +35,7 @@ const createNewProduct = async (newProduct) => {
       price: newProduct.price,
       description: newProduct.description,
       colors: newProduct.colors,
+      categoryId:newProduct.categoryId,
       isActive: true,
       createdAt: Date.now(),
     };
@@ -45,8 +47,13 @@ const createNewProduct = async (newProduct) => {
     const existingProduct = await GET_DB().collection(productCollection).findOne({ productName: productData.productName })
     if (existingProduct) throw new Error("Product already exists")
 
-    const result = await GET_DB().collection(productCollection).insertOne(productData)
-    return { _id: result.insertedId, ...productData }
+    const finalProduct = {
+      ...productData,
+      categoryId: productData.categoryId.map(id => new ObjectId(id))
+    }
+
+    const result = await GET_DB().collection(productCollection).insertOne(finalProduct)
+    return { _id: result.insertedId, ...finalProduct }
   } catch (error) {
     throw new Error(`Error creating product: ${error.message}`)
   }
@@ -87,11 +94,17 @@ const updateProduct = async (id, updatedProduct) => {
       price: updatedProduct.price,
       description: updatedProduct.description,
       colors: updatedProduct.colors,
+      categoryId: updatedProduct.categoryId,
       isActive: updatedProduct.isActive,
       updatedAt: Date.now()
     };
+    console.log("newProduct model update", updatedProduct)
     const { error } = productValidationSchema.validate(productData)
     if (error) throw new Error(`Validation error: ${error.details[0].message}`)
+
+      if (productData.categoryId) {
+        productData.categoryId = productData.categoryId.map(id => new ObjectId(id));
+      }
 
     const result = await GET_DB().collection(productCollection).updateOne({ _id: new ObjectId(id) }, { $set: productData })
     return result
@@ -100,11 +113,21 @@ const updateProduct = async (id, updatedProduct) => {
   }
 }
 
+const getProductsByCategoryId = async (id) => {
+    try {
+      const products = await GET_DB().collection(productCollection).find({ categoryId: new ObjectId(id) }).toArray()
+      return products
+    } catch (error) {
+      throw new Error(`Error fetching products: ${error.message}`)
+    }
+  }
+
 export const productModel = {
   getAllProduct,
   createNewProduct,
   findByName,
   deleteProduct,
   getProductById,
-  updateProduct
+  updateProduct,
+  getProductsByCategoryId
 }

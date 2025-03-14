@@ -1,22 +1,22 @@
 "use client";
-import { Avatar, Dropdown, Space } from "antd"
-import React from 'react'
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
+import { Avatar, Dropdown, Space } from "antd";
+import React from 'react';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 function Header() {
-  const [menu, setOpenMenu] = useState(false)
+  const [menu, setOpenMenu] = useState(false);
 
   useEffect(() => {
-    const btn = document.getElementById('click_btn')
-    const handleClick = () => setOpenMenu((prev) => !prev)
+    const btn = document.getElementById('click_btn');
+    const handleClick = () => setOpenMenu((prev) => !prev);
     if (btn) {
-      btn.addEventListener('click', () => handleClick())
+      btn.addEventListener('click', () => handleClick());
     }
     return () => {
-      if (btn) btn.removeEventListener('click', handleClick)
+      if (btn) btn.removeEventListener('click', handleClick);
     }
-  }, [])
+  }, []);
 
   const items = [
     {
@@ -45,8 +45,27 @@ function Header() {
       ),
     },
   ];
+
+  const menCategories = [
+    { name: "Áo phông", link: "/shop/men/t-shirts" },
+    { name: "Áo sơ mi", link: "/shop/men/shirts" },
+    { name: "Quần jeans", link: "/shop/men/jeans" },
+    { name: "Quần kaki", link: "/shop/men/khakis" },
+    { name: "Áo khoác", link: "/shop/men/jackets" },
+    { name: "Đồ thể thao", link: "/shop/men/sportswear" },
+  ];
+
+  const womenCategories = [
+    { name: "Áo phông", link: "/shop/women/t-shirts" },
+    { name: "Áo sơ mi", link: "/shop/women/blouses" },
+    { name: "Váy", link: "/shop/women/dresses" },
+    { name: "Quần jeans", link: "/shop/women/jeans" },
+    { name: "Áo khoác", link: "/shop/women/jackets" },
+    { name: "Đồ thể thao", link: "/shop/women/sportswear" },
+  ];
+
   return (
-    <header className="main-header">
+    <header>
       <div className="container">
         <div className="logo">
           <img src="/asset/download.jpg" width="50px" height="50px" alt="anh1" />
@@ -58,16 +77,44 @@ function Header() {
         </div>
         <div className="menu">
           <ul className="menu-list">
-            <Link href={"/"}><li>Home</li></Link>
-            <li>Shop</li>
+            <Link href={"/"}><li style={{ color: "#098178", backgroundColor: "unset"}}>Home</li></Link>
+            <li className="menu-item-with-submenu">
+              <Link href={"/shop/men"}>
+                <h3>Nam</h3>
+              </Link>
+              <div className="sub-menu">
+                <ul>
+                  {menCategories.map((category, index) => (
+                    <li  key={`men-${index}`}>
+                      <Link href={category.link}>
+                        {category.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+            <li className="menu-item-with-submenu">
+              <Link href={"/shop/women"}>
+                <h3>Nữ</h3>
+              </Link>
+              <div className="sub-menu">
+                <ul>
+                  {womenCategories.map((category, index) => (
+                    <li key={`women-${index}`}>
+                      <Link href={category.link}>
+                        {category.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </li>
             <li>Pages</li>
             <li>Blog</li>
             <li>Features</li>
             <li>Document</li>
             <Link href={"/login"}><li>PURCHASE</li></Link>
-            <div>
-            </div>
-
           </ul>
         </div>
         <div className="user" style={{ width: "10%", display: "flex", alignItems: "center", justifyContent: "space-around", gap: "5px" }}>

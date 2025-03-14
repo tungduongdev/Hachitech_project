@@ -11,6 +11,8 @@ Router.route('/login')
   .post(userValidation.login, userController.login)
 Router.route('/')
   .get(userController.getAll)
+Router.route('/logout')
+  .post(userController.logout)
 Router.route('/verify')
   .put(userValidation.verifyAccount, userController.verifyAccount)
 

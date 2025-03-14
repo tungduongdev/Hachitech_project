@@ -2,11 +2,12 @@ import { slugify } from "../utils/format.js"
 import { productModel } from "../models/productModel.js"
 import { StatusCodes } from "http-status-codes"
 import { CloudinaryProvider } from "../providers/cloudinaryProvider.js"
+import { ObjectId } from "mongodb"
 
 const createNew = async (reqBody, productImg) => {
   try {
     //console.log("service", productImg)
-    let imgUrl = []
+    let imgUrl = ""
 
     if (productImg) {
       const uploadResult = await CloudinaryProvider.streamUpload(productImg.buffer, 'products')
@@ -16,10 +17,10 @@ const createNew = async (reqBody, productImg) => {
     const newProduct = {
       ...reqBody,
       imgUrl,
-      slug: slugify(reqBody.productName)
+      slug: slugify(reqBody.productName),
     }
 
-    //console.log("newProduct", newProduct)
+    console.log("newProduct", newProduct)
 
     const createdProduct = await productModel.createNewProduct(newProduct)
     return createdProduct
@@ -84,10 +85,20 @@ const updateProduct = async (id, updatedProduct, productImg) => {
   }
 }
 
+const getProductsByCategoryId = async (id) => {
+  try {
+    const products = await productModel.getProductsByCategoryId(id)
+    return products
+  } catch (error) {
+    throw new Error(error.message || error)
+  }
+}
+
 export const productService = {
   createNew,
   getAll,
   deleteProduct,
   getProductById,
-  updateProduct
+  updateProduct,
+  getProductsByCategoryId
 }

@@ -1,35 +1,50 @@
 'use client';
 
-import { Table, Button, Image, Input, Upload, Modal, Form, InputNumber, Spin } from 'antd';
+import { Table, Button, Image, Input, Upload, Modal, Form, InputNumber, Spin, Select } from 'antd';
 import { UploadOutlined, LoadingOutlined, PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
-import { getProductsApi, deleteProductApi, addProductApi, updateProductApi } from '../../apis/apis';
+import { getProductsApi, deleteProductApi, addProductApi, updateProductApi, getCategoriesApi } from '../../apis/apis';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import DashboardSidebar from '../../components/dashboard/DashboardSidebar.jsx';
 
 const ProductTable = () => {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
   const [editingProduct, setEditingProduct] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [fileToUpload, setFileToUpload] = useState(null);
-  const [colors, setColors] = useState([]);
   const router = useRouter();
 
-  const [tableLoading, setTableLoading] = useState(true); // Bắt đầu với loading state
+  const [tableLoading, setTableLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState({});
   const [searchLoading, setSearchLoading] = useState(false);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
 
   const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
   useEffect(() => {
     fetchProducts();
+    fetchCategories();
   }, []);
 
+  const fetchCategories = async () => {
+    setCategoriesLoading(true);
+    try {
+      const response = await getCategoriesApi();
+      setCategories(response.data);
+    } catch (error) {
+      toast.error("Không thể tải danh sách danh mục");
+    } finally {
+      setCategoriesLoading(false);
+    }
+  };
+
   const fetchProducts = async () => {
-    setTableLoading(true); // Hiển thị loading khi bắt đầu fetch
+    setTableLoading(true);
     try {
       const response = await getProductsApi();
       console.log('API response:', response.data);
@@ -43,12 +58,13 @@ const ProductTable = () => {
         index: index + 1,
         ...product,
         price: product.price || 0,
-        colors: product.colors || []
+        colors: product.colors || [],
+        categoryId: Array.isArray(product.categoryId) ? product.categoryId : product.categoryId ? [product.categoryId] : [] // Đảm bảo categoryId là mảng
       })));
     } catch (error) {
       toast.error("Không thể tải danh sách sản phẩm");
     } finally {
-      setTableLoading(false); // Tắt loading sau khi hoàn thành
+      setTableLoading(false);
     }
   };
 
@@ -61,23 +77,25 @@ const ProductTable = () => {
 
       const formData = new FormData();
 
-      // Luôn gửi tất cả các trường dữ liệu
       formData.append("productName", values.productName);
       formData.append("price", values.price);
       formData.append("description", values.description || '');
+      
+      if (values.categoryId) {
+        formData.append("categoryId", JSON.stringify(values.categoryId)); // Gửi mảng categoryId dưới dạng JSON
+      }
 
-      // Xử lý mảng màu sắc - gửi dưới dạng JSON string
       if (values.colors) {
         formData.append("colors", JSON.stringify(values.colors));
       }
-      // Xử lý ảnh
+
       if (fileToUpload) {
         formData.append("imgUrl", fileToUpload);
       } else if (editingProduct && editingProduct.imgUrl) {
-        // Nếu không có file mới và đang chỉnh sửa sản phẩm, gửi URL ảnh cũ
-        // Chú ý: Điều này phụ thuộc vào cách backend xử lý imgUrl
         formData.append("imgUrl", editingProduct.imgUrl);
       }
+
+      console.log('Dữ liệu gửi đi:', Object.fromEntries(formData)); // Log dữ liệu để kiểm tra
 
       let response;
       if (editingProduct) {
@@ -104,13 +122,15 @@ const ProductTable = () => {
       setSubmitLoading(false);
     }
   };
+
   const handleBeforeUpload = (file) => {
-    const isLt2M = file.size / 1024 / 1024 < 5; // Giới hạn 2MB
+    const isLt2M = file.size / 1024 / 1024 < 5;
     if (!isLt2M) {
       toast.error('Ảnh phải nhỏ hơn 5MB!');
     }
     return isLt2M;
   };
+
   const handleCancel = () => {
     setIsModalOpen(false);
     form.resetFields();
@@ -119,8 +139,10 @@ const ProductTable = () => {
     setFileToUpload(null);
   };
 
-  const handleUploadChange = (file) => {
-    if (!file.type.startsWith('image/')) {
+  const handleUploadChange = (info) => {
+    const file = info.file || info;
+    
+    if (!file.type || !file.type.startsWith('image/')) {
       toast.error('Chỉ được tải lên file hình ảnh!');
       return Upload.LIST_IGNORE;
     }
@@ -128,7 +150,7 @@ const ProductTable = () => {
     const imageURL = URL.createObjectURL(file);
     setImageUrl(imageURL);
     setFileToUpload(file);
-    return false; // Trả về false để component Upload không tự động upload
+    return false;
   };
 
   const handleDelete = async (id) => {
@@ -158,7 +180,6 @@ const ProductTable = () => {
       return;
     }
 
-    // Giả lập thời gian tìm kiếm
     setTimeout(() => {
       setProducts(products.filter(product =>
         product.productName.toLowerCase().includes(value.toLowerCase())
@@ -167,164 +188,258 @@ const ProductTable = () => {
     }, 300);
   };
 
+  // Lấy tên danh mục từ mảng categoryId
+  const getCategoryName = (categoryIds) => {
+    if (!categoryIds || !Array.isArray(categoryIds) || categoryIds.length === 0) {
+      return 'Không có';
+    }
+    const categoryNames = categoryIds.map(id => {
+      const category = categories.find(cat => cat._id === id);
+      return category ? category.categoryName : 'Không xác định';
+    });
+    return categoryNames.join(', '); // Hiển thị danh sách tên danh mục, cách nhau bởi dấu phẩy
+  };
+
+  // Styles để sửa lỗi layout
+  const styles = {
+    container: {
+      display: 'flex',
+      minHeight: '100vh',
+    },
+    content: {
+      flexGrow: 1,
+      padding: '20px',
+      marginLeft: '250px', // Giữ khoảng cách với sidebar
+      width: 'calc(100% - 200px)',
+      boxSizing: 'border-box',
+    },
+    header: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '20px',
+    },
+    actionButtons: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '10px',
+    }
+  };
+
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>Danh sách sản phẩm</h1>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Button type="primary" onClick={() => {
-            setIsModalOpen(true);
-            setImageUrl(null);
-            setFileToUpload(null);
-            form.resetFields();
-          }}>
-            Thêm sản phẩm
-          </Button>
-          <Input.Search
-            placeholder="Tìm kiếm sản phẩm..."
-            style={{ width: 200 }}
-            onSearch={handleSearch}
-            loading={searchLoading}
-            allowClear
-          />
+    <div style={styles.container}>
+      <DashboardSidebar />
+      <div style={styles.content}>
+        <div style={styles.header}>
+          <h1>Danh sách sản phẩm</h1>
+          <div style={styles.actionButtons}>
+            <Button 
+              type="primary" 
+              onClick={() => {
+                setIsModalOpen(true);
+                setImageUrl(null);
+                setFileToUpload(null);
+                form.resetFields();
+              }}
+            >
+              Thêm sản phẩm
+            </Button>
+            <Input.Search
+              placeholder="Tìm kiếm sản phẩm..."
+              style={{ width: 200 }}
+              onSearch={handleSearch}
+              loading={searchLoading}
+              allowClear
+            />
+          </div>
         </div>
-      </div>
 
-      <Table
-        loading={{
-          spinning: tableLoading,
-          indicator: <Spin indicator={antIcon} />
-        }}
-        columns={[
-          { title: 'ID', dataIndex: 'index', key: 'id', align: 'center' },
-          {
-            title: 'Ảnh',
-            dataIndex: 'imgUrl',
-            key: 'imgUrl',
-            align: 'center',
-            render: (img) => img ? <Image width={50} src={img} alt="product" /> : <div>No image</div>,
-          },
-          { title: 'Tên sản phẩm', dataIndex: 'productName', key: 'productName' },
-          {
-            title: 'Giá (USD)',
-            dataIndex: 'price',
-            key: 'price',
-            render: (price) => (price || 0).toLocaleString() + ' USD',
-          },
-          { title: 'Mô tả', dataIndex: 'description', key: 'description' }
-          ,
-          {
-            title: 'Màu sắc',
-            dataIndex: 'colors',
-            key: 'colors',
-            render: (colors) => {
-              if (!colors || colors.length === 0) return 'Không có';
-              return colors.join(', ');
-            }
-          },
-          ,
-          {
-            title: 'Hành động',
-            key: 'action',
-            align: 'center',
-            render: (_, record) => (
-              <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
-                <Button
-                  onClick={() => {
-                    setEditingProduct(record);
-                    form.setFieldsValue({
-                      productName: record.productName,
-                      price: record.price,
-                      imgUrl: record.imgUrl,
-                      description: record.description
-                    });
-                    setImageUrl(record.imgUrl);
-                    setFileToUpload(null);
-                    setIsModalOpen(true);
-                  }}
-                  type="primary"
-                >
-                  Sửa
-                </Button>
-                <Button
-                  type="primary"
-                  danger
-                  loading={deleteLoading[record._id]}
-                  onClick={() => handleDelete(record._id)}
-                >
-                  Xóa
-                </Button>
-              </div>
-            ),
-          },
-        ]}
-        dataSource={products}
-        rowKey="key"
-      />
-
-      <Modal
-        title={editingProduct ? "Chỉnh sửa sản phẩm" : "Thêm sản phẩm"}
-        open={isModalOpen}
-        onCancel={handleCancel}
-        confirmLoading={submitLoading}
-        onOk={handleOk}
-      >
-        <Form form={form} layout="vertical">
-          <Form.Item label="Tên sản phẩm" name="productName" rules={[{ required: true, message: "Vui lòng nhập tên sản phẩm!" }]}>
-            <Input placeholder="Nhập tên sản phẩm" />
-          </Form.Item>
-          <Form.Item label="Giá" name="price" rules={[{ required: true, message: "Vui lòng nhập giá!" }]}>
-            <InputNumber min={0} style={{ width: "100%" }} placeholder="Nhập giá sản phẩm" />
-          </Form.Item>
-          <Form.Item name="imgUrl" hidden>
-            <Input />
-          </Form.Item>
-          <Form.Item label="Mô tả" name="description">
-            <Input.TextArea rows={4} placeholder="Nhập mô tả sản phẩm" />
-          </Form.Item>
-          <Form.Item label="Màu sắc">
-            <Form.List name="colors" initialValue={[]}>
-              {(fields, { add, remove }) => (
-                <>
-                  {fields.map((field) => (
-                    <div key={field.key} style={{ display: 'flex', marginBottom: 8, gap: 8 }}>
-                      <Form.Item
-                        {...field}
-                        noStyle
-                      >
-                        <Input placeholder="Nhập màu sắc" style={{ width: '100%' }} />
-                      </Form.Item>
-                      <Button
-                        type="dashed"
-                        danger
-                        onClick={() => remove(field.name)}
-                        icon={<MinusCircleOutlined />}
-                      />
-                    </div>
-                  ))}
+        <Table
+          loading={{
+            spinning: tableLoading,
+            indicator: <Spin indicator={antIcon} />
+          }}
+          columns={[
+            { title: 'ID', dataIndex: 'index', key: 'id', align: 'center', width: 80 },
+            {
+              title: 'Ảnh',
+              dataIndex: 'imgUrl',
+              key: 'imgUrl',
+              align: 'center',
+              width: 100,
+              render: (img) => img ? <Image width={50} src={img} alt="product" /> : <div>No image</div>,
+            },
+            { title: 'Tên sản phẩm', dataIndex: 'productName', key: 'productName' },
+            {
+              title: 'Giá (USD)',
+              dataIndex: 'price',
+              key: 'price',
+              width: 120,
+              render: (price) => (price || 0).toLocaleString() + ' USD',
+            },
+            { 
+              title: 'Danh mục', 
+              dataIndex: 'categoryId', 
+              key: 'categoryId',
+              render: (categoryIds) => getCategoryName(categoryIds) // Hiển thị tất cả danh mục
+            },
+            { title: 'Mô tả', dataIndex: 'description', key: 'description' },
+            {
+              title: 'Màu sắc',
+              dataIndex: 'colors',
+              key: 'colors',
+              render: (colors) => {
+                if (!colors || colors.length === 0) return 'Không có';
+                return colors.join(', ');
+              }
+            },
+            {
+              title: 'Hành động',
+              key: 'action',
+              align: 'center',
+              width: 180,
+              render: (_, record) => (
+                <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
                   <Button
-                    type="dashed"
-                    onClick={() => add()}
-                    style={{ width: '100%' }}
-                    icon={<PlusOutlined />}
+                    onClick={() => {
+                      setEditingProduct(record);
+                      form.setFieldsValue({
+                        productName: record.productName,
+                        price: record.price,
+                        description: record.description,
+                        colors: record.colors,
+                        categoryId: record.categoryId // Đảm bảo đây là mảng
+                      });
+                      setImageUrl(record.imgUrl);
+                      setFileToUpload(null);
+                      setIsModalOpen(true);
+                    }}
+                    type="primary"
                   >
-                    Thêm màu sắc
+                    Sửa
                   </Button>
-                </>
-              )}
-            </Form.List>
-          </Form.Item>
-          <Form.Item label="Tải ảnh lên">
-            <Upload handleBeforeUpload={handleBeforeUpload} listType="picture-card" showUploadList={false} beforeUpload={handleUploadChange}>
-              {imageUrl ? (
-                <img src={imageUrl} alt="sản phẩm" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              ) : (
-                submitLoading ? <Spin indicator={antIcon} /> : <UploadOutlined />
-              )}
-            </Upload>
-          </Form.Item>
-        </Form>
-      </Modal>
+                  <Button
+                    type="primary"
+                    danger
+                    loading={deleteLoading[record._id]}
+                    onClick={() => handleDelete(record._id)}
+                  >
+                    Xóa
+                  </Button>
+                </div>
+              ),
+            },
+          ]}
+          dataSource={products}
+          rowKey="key"
+          pagination={{ pageSize: 10 }}
+          scroll={{ x: 1000 }}
+        />
+
+        <Modal
+          title={editingProduct ? "Chỉnh sửa sản phẩm" : "Thêm sản phẩm"}
+          open={isModalOpen}
+          onCancel={handleCancel}
+          confirmLoading={submitLoading}
+          onOk={handleOk}
+          width={600}
+        >
+          <Form form={form} layout="vertical">
+            <Form.Item label="Tên sản phẩm" name="productName" rules={[{ required: true, message: "Vui lòng nhập tên sản phẩm!" }]}>
+              <Input placeholder="Nhập tên sản phẩm" />
+            </Form.Item>
+            <Form.Item label="Giá" name="price" rules={[{ required: true, message: "Vui lòng nhập giá!" }]}>
+              <InputNumber min={0} style={{ width: "100%" }} placeholder="Nhập giá sản phẩm" />
+            </Form.Item>
+            <Form.Item 
+              label="Danh mục" 
+              name="categoryId" 
+              rules={[{ required: true, message: "Vui lòng chọn ít nhất một danh mục!" }]}
+            >
+              <Select
+                mode="multiple" // Cho phép chọn nhiều danh mục
+                placeholder="Chọn danh mục"
+                loading={categoriesLoading}
+                allowClear
+                showSearch // Cho phép tìm kiếm danh mục
+                optionFilterProp="children" // Tìm kiếm theo nội dung hiển thị
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                } // Lọc tùy chỉnh
+              >
+                {categories.map(category => (
+                  <Select.Option key={category._id} value={category._id}>
+                    {category.categoryName}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item name="imgUrl" hidden>
+              <Input />
+            </Form.Item>
+            <Form.Item label="Mô tả" name="description">
+              <Input.TextArea rows={4} placeholder="Nhập mô tả sản phẩm" />
+            </Form.Item>
+            <Form.Item label="Màu sắc">
+              <Form.List name="colors" initialValue={[]}>
+                {(fields, { add, remove }) => (
+                  <>
+                    {fields.map((field) => (
+                      <div key={field.key} style={{ display: 'flex', marginBottom: 8, gap: 8 }}>
+                        <Form.Item
+                          key={field.key}
+                          name={field.name}
+                          fieldKey={field.fieldKey}
+                          noStyle
+                        >
+                          <Input placeholder="Nhập màu sắc" style={{ width: '100%' }} />
+                        </Form.Item>
+                        <Button
+                          type="dashed"
+                          danger
+                          onClick={() => remove(field.name)}
+                          icon={<MinusCircleOutlined />}
+                        />
+                      </div>
+                    ))}
+                    <Button
+                      type="dashed"
+                      onClick={() => add()}
+                      style={{ width: '100%' }}
+                      icon={<PlusOutlined />}
+                    >
+                      Thêm màu sắc
+                    </Button>
+                  </>
+                )}
+              </Form.List>
+            </Form.Item>
+            <Form.Item label="Tải ảnh lên">
+              <Upload 
+                beforeUpload={handleBeforeUpload} 
+                listType="picture-card" 
+                showUploadList={false} 
+                customRequest={({ file }) => handleUploadChange(file)}
+              >
+                {imageUrl ? (
+                  <img src={imageUrl} alt="sản phẩm" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <div>
+                    {submitLoading ? (
+                      <Spin indicator={antIcon} />
+                    ) : (
+                      <div>
+                        <PlusOutlined />
+                        <div style={{ marginTop: 8 }}>Tải ảnh lên</div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </Upload>
+            </Form.Item>
+          </Form>
+        </Modal>
+      </div>
     </div>
   );
 };

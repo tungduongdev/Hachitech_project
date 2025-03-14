@@ -45,9 +45,28 @@ const verifyAccount = async (req, res, next) => {
   }
 }
 
+const logout = async (req, res, next) => {
+  try {
+    res.cookie('accessToken', '', {
+      httpOnly: true,
+      expires: new Date(0), // Hết hạn ngay lập tức (ngày trong quá khứ)
+      path: '/'
+    })
+    res.cookie('refreshToken', '', {
+      httpOnly: true,
+      expires: new Date(0), // Hết hạn ngay lập tức (ngày trong quá khứ)
+      path: '/'
+    })
+    res.status(200).json({ message: 'Logout successfully' })
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const userController = {
   login,
   register,
   getAll,
-  verifyAccount
+  verifyAccount,
+  logout
 }
