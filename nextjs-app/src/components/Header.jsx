@@ -69,7 +69,7 @@ function Header() {
         <div className="menu">
           <ul className="menu-list">
             <Link href={"/"}>
-              <li style={{ color: "#098178", backgroundColor: "unset" }}>Home</li>
+              <li style={{ color: "#212726", backgroundColor: "unset" }}>Home</li>
             </Link>
             <li className="menu-item-with-submenu">
               <h3>Shop</h3>
@@ -107,7 +107,7 @@ function Header() {
                 {user.imgUrl && (
                   <Avatar className="avt" size="large" src={user.imgUrl} alt="avatar" />
                 )}
-                <span>{user.username ? `Hi, ${user.username}` : "Hi, Guest"}</span>
+                <span style={{ color: "#212726"}}>{user.username ? `Hi, ${user.username}` : "Hi, Guest"}</span>
               </Space>
             </a>
           </Dropdown>

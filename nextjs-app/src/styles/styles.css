@@ -5,15 +5,16 @@
 }
 
 body {
-  background: url(/asset/bg-1.jpg) no-repeat center center/cover;
-  font-family: "Roboto", sans-serif;
-  font-size: 16px;
-  background-size: cover;
+  background: #f0f0f0; /* Màu nền trước khi ảnh tải xong */
+  fontfamily: "Roboto, sans-serif";
+  fontsize: "16px";
+  minheight: "1100px";
+}
+
+body.lazy-load {
+  background: url(/asset/bg-1.webp) no-repeat center center/cover;
   background-attachment: fixed;
-  width: 100%;
-  height: 100%;
-  background-position: 50%;
-  min-height: 1100px;
+  background-size: cover;
 }
 
 .container {
@@ -44,6 +45,7 @@ body {
   justify-content: space-between;
   font-size: 15px;
   align-items: center;
+  color: #212726;
 }
 
 .menu-list li:last-child {
@@ -185,7 +187,7 @@ footer .container {
 }
 
 .footer-content .footer-item p {
-  color: #caa652;
+  color: #212726;
 }
 
 .footer-content .footer-item:first-child {
@@ -199,7 +201,7 @@ footer .container {
 }
 
 .btn {
-  background-color: #ffe4e4;
+  background-color: #fff;
   color: #098178;
   padding: 20px 40px 15px 40px;
   border: none;
@@ -233,7 +235,7 @@ footer .container {
 
 .container .about-content h4 {
   font-size: 1rem;
-  color: #098178;
+  color: #212726;
   margin: 20px 0;
 }
 
@@ -313,7 +315,7 @@ footer .container {
 .main-features .container {
   display: flex;
   justify-content: space-around;
-  align-items: start;
+  align-items: flex-start;
   text-align: center;
   height: 100%;
   width: 100%;
@@ -329,7 +331,7 @@ footer .container {
   display: flex;
   justify-content: center;
   flex-direction: column;
-  text-align: start;
+  text-align: flex-start;
 }
 
 .features-heading p {
@@ -339,7 +341,7 @@ footer .container {
 }
 
 #changing-text {
-  color: #c79b36;
+  color: #212726;
   font-weight: bold;
   min-width: 100px;
 }
@@ -351,8 +353,6 @@ footer .container {
   margin-left: auto;
   margin-right: auto;
 }
-
-File CSS riêng cho Slidebar
 
 .slidebar-container {
   width: 100%;
@@ -506,7 +506,6 @@ File CSS riêng cho Slidebar
   position: relative;
 }
 
-
 .menu-item-with-submenu h3 {
   margin: 0;
   font-size: 16px;
@@ -558,8 +557,14 @@ File CSS riêng cho Slidebar
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Responsive menu */
@@ -575,11 +580,11 @@ File CSS riêng cho Slidebar
   .hidden-menu {
     display: block;
   }
-  
+
   .menu {
     display: none;
   }
-  
+
   .menu-items-rp.active {
     display: block;
     position: absolute;
@@ -590,18 +595,19 @@ File CSS riêng cho Slidebar
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     z-index: 100;
   }
-  
+
   .menu-list-rp {
     list-style-type: none;
     padding: 0;
     margin: 0;
   }
-  
+
   .menu-list-rp li {
     padding: 15px 20px;
     border-bottom: 1px solid #eee;
   }
-  .product-list, .about {
+  .product-list,
+  .about {
     padding: 0 20px;
   }
   .avt {
