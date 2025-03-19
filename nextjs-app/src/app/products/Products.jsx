@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image"; // Thêm import này
 
 async function getProducts() {
   try {
@@ -40,7 +41,7 @@ export default async function ProductsPage() {
               <Link className="product-item" key={product._id} href={`/product/${product._id}`}>
                 <div className="product-card">
                   <div className="product-image">
-                    <img src={product.imgUrl} alt={product.productName} />
+                    <Image width={220} height={220} src={product.imgUrl} alt={product.productName} />
                   </div>
                   <div className="product-info">
                     <h4 className="product-title">{product.productName}</h4>

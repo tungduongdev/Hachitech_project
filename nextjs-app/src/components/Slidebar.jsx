@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 
 function Slidebar() {
   const [isHovered, setIsHovered] = useState(false);
@@ -31,35 +32,35 @@ function Slidebar() {
             onMouseLeave={handleMouseLeave}
           >
             <div className="slidebar-item">
-              <img src="/asset/slider-6.webp" alt="anh1"/>
+              <Image width={"200"} height={"177"} loading="lazy" src="/asset/slider-6.webp" alt="anh1"/>
             </div>
             <div className="slidebar-item">
-              <img src="/asset/slider-7.webp" alt="anh2"/>
+              <Image width={"200"} height={"177"} loading="lazy" src="/asset/slider-7.webp" alt="anh2"/>
             </div>
             <div className="slidebar-item">
-              <img src="/asset/slider-1.webp" alt="anh3"/>
+              <Image width={"200"} height={"177"} loading="lazy" src="/asset/slider-1.webp" alt="anh3"/>
             </div>
             <div className="slidebar-item">
-              <img src="/asset/slider-3.webp" alt="anh4"/>
+              <Image width={"200"}  height={"177"} loading="lazy" src="/asset/slider-3.webp" alt="anh4"/>
             </div>
             <div className="slidebar-item">
-              <img src="/asset/slider-2.webp" alt="anh5"/>
+              <Image width={"200"} height={"177"} loading="lazy" src="/asset/slider-2.webp" alt="anh5"/>
             </div>
             {/* Lặp lại các phần tử để tạo hiệu ứng vô hạn */}
             <div className="slidebar-item">
-              <img src="/asset/slider-6.webp" alt="anh6"/>
+              <Image width={"200"} height={"177"} loading="lazy" src="/asset/slider-6.webp" alt="anh6"/>
             </div>
             <div className="slidebar-item">
-              <img src="/asset/slider-7.webp" alt="anh7"/>
+              <Image width={"200"} height={"177"} loading="lazy" src="/asset/slider-7.webp" alt="anh7"/>
             </div>
             <div className="slidebar-item">
-              <img src="/asset/slider-1.webp" alt="anh8"/>
+              <Image  width={"200"} height={"177"} loading="lazy" src="/asset/slider-1.webp" alt="anh8"/>
             </div>
             <div className="slidebar-item">
-              <img src="/asset/slider-3.webp" alt="anh9"/>
+              <Image width={"200"} height={"177"} loading="lazy" src="/asset/slider-3.webp" alt="anh9"/>
             </div>
             <div className="slidebar-item">
-              <img src="/asset/slider-2.webp" alt="anh10"/>
+              <Image width={"200"} height={"177"} loading="lazy" src="/asset/slider-2.webp" alt="anh10"/>
             </div>
           </div>
         </div>
