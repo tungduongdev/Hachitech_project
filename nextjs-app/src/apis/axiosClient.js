@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/v1';
+const API_URL = 'http://66.42.52.15/api/v1';
 // Biến để theo dõi trạng thái refresh
 let isRefreshing = false;
 let failedQueue = [];
