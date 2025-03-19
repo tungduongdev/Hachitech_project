@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import DashboardSidebar from '../../../components/dashboard/DashboardSidebar.jsx';
-import {addCategoryApi, deleteCategoryApi, getCategoriesApi, updateCategoryApi} from '../../../apis/apis.js'
+import { addCategoryApi, deleteCategoryApi, getCategoriesApi, updateCategoryApi } from '../../../apis/apis.js'
 
 const CategoryTable = () => {
   const [categories, setCategories] = useState([]);
@@ -53,9 +53,9 @@ const CategoryTable = () => {
       if (editingCategory) {
         response = await updateCategoryApi(editingCategory._id, values);
         if (response.status === 200) {
-          setCategories(prev => prev.map(cat => 
-            cat._id === editingCategory._id 
-              ? { ...cat, ...values, key: editingCategory._id } 
+          setCategories(prev => prev.map(cat =>
+            cat._id === editingCategory._id
+              ? { ...cat, ...values, key: editingCategory._id }
               : cat
           ));
           toast.success("Cập nhật danh mục thành công!");
@@ -63,7 +63,7 @@ const CategoryTable = () => {
       } else {
         response = await addCategoryApi(values);
         if (response.status === 201) {
-          const newCategory = { 
+          const newCategory = {
             ...response.data,
             index: categories.length + 1,
             key: response.data._id
@@ -95,7 +95,7 @@ const CategoryTable = () => {
     try {
       setDeleteLoading(prev => ({ ...prev, [id]: true }));
       const response = await deleteCategoryApi(id);
-      
+
       if (response.status === 200) {
         setCategories(prev => prev.filter(cat => cat._id !== id));
         toast.success("Xóa danh mục thành công!");
@@ -121,7 +121,7 @@ const CategoryTable = () => {
       // const response = await searchCategoriesApi(value);
       // const data = response.data;
       // setCategories(data.map(...));
-      
+
       // Lọc cục bộ nếu API không hỗ trợ tìm kiếm
       setCategories(prevCategories => prevCategories.filter(category =>
         category.categoryName.toLowerCase().includes(value.toLowerCase())
@@ -166,8 +166,8 @@ const CategoryTable = () => {
         <div style={styles.header}>
           <h1>Quản lý danh mục</h1>
           <div style={styles.actionButtons}>
-            <Button 
-              type="primary" 
+            <Button
+              type="primary"
               onClick={() => {
                 setIsModalOpen(true);
                 form.resetFields();
@@ -196,9 +196,9 @@ const CategoryTable = () => {
             { title: 'Tên danh mục', dataIndex: 'categoryName', key: 'categoryName' },
             { title: 'Mô tả', dataIndex: 'description', key: 'description' },
             { title: 'Slug', dataIndex: 'slug', key: 'slug' },
-            { 
-              title: 'Số sản phẩm', 
-              dataIndex: 'productCount', 
+            {
+              title: 'Số sản phẩm',
+              dataIndex: 'productCount',
               key: 'productCount',
               align: 'center',
               width: 120
@@ -255,15 +255,15 @@ const CategoryTable = () => {
           onOk={handleOk}
         >
           <Form form={form} layout="vertical">
-            <Form.Item 
-              label="Tên danh mục" 
-              name="categoryName" 
+            <Form.Item
+              label="Tên danh mục"
+              name="categoryName"
               rules={[{ required: true, message: "Vui lòng nhập tên danh mục!" }]}
             >
               <Input placeholder="Nhập tên danh mục" />
             </Form.Item>
-            <Form.Item 
-              label="Mô tả" 
+            <Form.Item
+              label="Mô tả"
               name="description"
             >
               <Input.TextArea rows={4} placeholder="Nhập mô tả danh mục" />

@@ -47,10 +47,20 @@ const updateCategory = async (req, res, next) => {
   }
 }
 
+const findCategoryByName = async (req, res, next) => {
+  try {
+    const category = await categoryService.findCategoryByName(req.params.name)
+    res.status(StatusCodes.OK).json(category)
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const categoryController = {
   createNew,
   getAll,
   deleteCategory,
   getCategoryById,
-  updateCategory
+  updateCategory,
+  findCategoryByName
 }

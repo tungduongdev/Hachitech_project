@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { getProductByIdApi } from '../../../apis/apis.js';
 
+
 const ProductDetailPage = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);

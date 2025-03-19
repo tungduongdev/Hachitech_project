@@ -75,12 +75,36 @@ const ProductTable = () => {
 
       setSubmitLoading(true);
 
+      if (!values.productName) {
+        throw new Error("Tên sản phẩm không được để trống!");
+      }
+      if (values.price === undefined || values.price === null) {
+        throw new Error("Giá sản phẩm không được để trống!");
+      }
+      if (!values.categoryId || values.categoryId.length === 0) {
+        throw new Error("Vui lòng chọn ít nhất một danh mục!");
+      }
+      if (!fileToUpload && !editingProduct?.imgUrl) {
+        throw new Error("Vui lòng tải lên ảnh sản phẩm!");
+      }
+
+      // Kiểm tra giá trị hợp lệ
+      if (values.price < 0) {
+        throw new Error("Giá không được âm!");
+      }
+      if (values.colors && values.colors.length > 0) {
+        const uniqueColors = new Set(values.colors);
+        if (uniqueColors.size !== values.colors.length) {
+          throw new Error("Màu sắc không được trùng lặp!");
+        }
+      }
+
       const formData = new FormData();
 
       formData.append("productName", values.productName);
       formData.append("price", values.price);
       formData.append("description", values.description || '');
-      
+
       if (values.categoryId) {
         formData.append("categoryId", JSON.stringify(values.categoryId)); // Gửi mảng categoryId dưới dạng JSON
       }
@@ -124,7 +148,7 @@ const ProductTable = () => {
   };
 
   const handleBeforeUpload = (file) => {
-    const isLt2M = file.size / 1024 / 1024 < 5;
+    const isLt2M = file.size / 1024 / 1024 < 2;
     if (!isLt2M) {
       toast.error('Ảnh phải nhỏ hơn 5MB!');
     }
@@ -141,7 +165,7 @@ const ProductTable = () => {
 
   const handleUploadChange = (info) => {
     const file = info.file || info;
-    
+
     if (!file.type || !file.type.startsWith('image/')) {
       toast.error('Chỉ được tải lên file hình ảnh!');
       return Upload.LIST_IGNORE;
@@ -233,8 +257,8 @@ const ProductTable = () => {
         <div style={styles.header}>
           <h1>Danh sách sản phẩm</h1>
           <div style={styles.actionButtons}>
-            <Button 
-              type="primary" 
+            <Button
+              type="primary"
               onClick={() => {
                 setIsModalOpen(true);
                 setImageUrl(null);
@@ -277,9 +301,9 @@ const ProductTable = () => {
               width: 120,
               render: (price) => (price || 0).toLocaleString() + ' USD',
             },
-            { 
-              title: 'Danh mục', 
-              dataIndex: 'categoryId', 
+            {
+              title: 'Danh mục',
+              dataIndex: 'categoryId',
               key: 'categoryId',
               render: (categoryIds) => getCategoryName(categoryIds) // Hiển thị tất cả danh mục
             },
@@ -349,11 +373,11 @@ const ProductTable = () => {
               <Input placeholder="Nhập tên sản phẩm" />
             </Form.Item>
             <Form.Item label="Giá" name="price" rules={[{ required: true, message: "Vui lòng nhập giá!" }]}>
-              <InputNumber min={0} style={{ width: "100%" }} placeholder="Nhập giá sản phẩm" />
+              <InputNumber min={0} value={Number} style={{ width: "100%" }} placeholder="Nhập giá sản phẩm" />
             </Form.Item>
-            <Form.Item 
-              label="Danh mục" 
-              name="categoryId" 
+            <Form.Item
+              label="Danh mục"
+              name="categoryId"
               rules={[{ required: true, message: "Vui lòng chọn ít nhất một danh mục!" }]}
             >
               <Select
@@ -415,10 +439,10 @@ const ProductTable = () => {
               </Form.List>
             </Form.Item>
             <Form.Item label="Tải ảnh lên">
-              <Upload 
-                beforeUpload={handleBeforeUpload} 
-                listType="picture-card" 
-                showUploadList={false} 
+              <Upload
+                beforeUpload={handleBeforeUpload}
+                listType="picture-card"
+                showUploadList={false}
                 customRequest={({ file }) => handleUploadChange(file)}
               >
                 {imageUrl ? (

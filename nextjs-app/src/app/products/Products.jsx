@@ -29,7 +29,7 @@ export default async function ProductsPage() {
   return (
     <main className="main-body">
       <div className="container">
-        <section className="product">
+        <section style={{ width: "100%"}} className="product">
           <div className="product-heading">
             <h3>Our Products</h3>
             <p>Check out our latest collection</p>
@@ -45,7 +45,7 @@ export default async function ProductsPage() {
                   <div className="product-info">
                     <h4 className="product-title">{product.productName}</h4>
                     <p className="product-price">${product.price.toLocaleString()}</p>
-                    <p className="product-description">{product.description || "Không có mô tả"}</p>
+                    <p className="product-description">{product?.description || "Không có mô tả"}</p>
                   </div>
                 </div>
               </Link>

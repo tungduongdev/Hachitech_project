@@ -104,9 +104,49 @@ const getAll = async () => {
   }
 }
 
+const refreshToken = async (refreshToken) => {
+  try {
+    if (!refreshToken) throw new apiError(StatusCodes.BAD_REQUEST, 'Refresh token is required')
+    const decoded = jwtProvider.verifyToken(refreshToken, env.REFRESH_TOKEN_SECRET)
+    const userInfor = {
+      _id: decoded._id,
+      username: decoded.username,
+      role: decoded.role
+    }
+    const accessToken = await jwtProvider.generateToken(
+      userInfor,
+      env.JWT_SECRET,
+      env.JWT_EXPIRES_IN
+    )
+    return { accessToken }
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+const getUserById = async (id) => {
+  try {
+    const user = await userModel.findById(id)
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return {
+      userId: user._id,
+      username: user.username,
+      imgUrl: user.imgUrl || null, // Nếu có trường avatar
+      role: user.role,
+    };
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+
 export const userService = {
   login,
   register,
   getAll,
-  verifyAccount
+  verifyAccount,
+  refreshToken,
+  getUserById
 }

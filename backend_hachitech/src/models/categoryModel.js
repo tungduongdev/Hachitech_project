@@ -123,10 +123,19 @@ const updateCategory = async (id, updatedCategory) => {
   }
 }
 
+const findCategoryByName = async (name) => {
+  try {
+    const category = await GET_DB().collection(categoryCollection).findOne({ categoryName: name })
+    return category
+  } catch (error) {
+    throw new Error(`Error fetching product: ${error.message}`)
+  }
+}
 export const categoryModel = {
   getAllCategory,
   createNewCategory,
   deleteCategory,
   getCategoryById,
-  updateCategory
+  updateCategory,
+  findCategoryByName
 }

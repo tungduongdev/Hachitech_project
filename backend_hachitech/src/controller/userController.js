@@ -6,11 +6,11 @@ const login = async (req, res, next) => {
     const result = await userService.login(req.body)
     res.cookie('accessToken', result.accessToken, {
       httpOnly: true,
-      maxAge: ms('1d')
+      maxAge: ms('15m'),
     })
     res.cookie('refreshToken', result.refreshToken, {
       httpOnly: true,
-      maxAge: ms('7d')
+      maxAge: ms('7d'),
     })
     res.status(200).json(result)
   } catch (error) {
@@ -63,10 +63,59 @@ const logout = async (req, res, next) => {
   }
 }
 
+const refreshToken = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.cookies
+    if (!refreshToken) {
+      throw new Error('Refresh token is not found')
+    }
+    console.log("refreshToken", refreshToken)
+    const result = await userService.refreshToken(refreshToken)
+    res.cookie('accessToken', result.accessToken, {
+      httpOnly: true,
+      maxAge: ms('15m'),
+    })
+    res.cookie('refreshToken', result.refreshToken, {
+      httpOnly: true,
+      maxAge: ms('7d'),
+    })
+    res.status(200).json(result)
+  } catch (error) {
+    next(error)
+  }
+}
+
+const getUserById = async (req, res, next) => {
+  try {
+    const user = await userService.getUserById(req.params.id)
+    res.status(200).json(user)
+  } catch (error) {
+    next(error)
+  }
+}
+
+const getMe = async (req, res, next) => {
+  try {
+    if (!req.user) {
+      // Người dùng chưa đăng nhập
+      return res.status(200).json({ user: null, message: 'Not logged in' });
+    }
+    const userId =  req.user._id
+    //console.log("userId", userId)
+    const user = await userService.getUserById(userId)
+    res.status(200).json(user)
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const userController = {
   login,
   register,
   getAll,
   verifyAccount,
-  logout
+  logout,
+  refreshToken,
+  getUserById,
+  getMe
 }

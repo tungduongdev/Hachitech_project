@@ -13,7 +13,9 @@ Router.route('/')
   .get(userController.getAll)
 Router.route('/logout')
   .post(userController.logout)
-Router.route('/verify')
-  .put(userValidation.verifyAccount, userController.verifyAccount)
+Router.route('/refresh-token')
+  .post(userController.refreshToken)
+Router.route('/me')
+  .get(authMiddlewere.isAuthorized, userController.getMe)
 
 export const userRoute = Router

@@ -3,36 +3,42 @@
     "id": 1,
     "name": "iPhone 15 Pro",
     "image": "/asset/download.jpg",
-    "price": 999.99
+    "price": 999.99,
+    "description": "The iPhone 15 Pro is the latest and greatest iPhone model. It has a 6.7-inch Super Retina XDR display, the A16 Bionic chip, and a triple-camera system with LiDAR Scanner. It also supports 5G and has a MagSafe connector for easy wireless charging."
   },
   {
     "id": 2,
     "name": "Samsung Galaxy S23",
     "image": "/asset/download.jpg",
-    "price": 899.99
+    "price": 899.99,
+    "description": "The Samsung Galaxy S23 is the latest flagship smartphone from Samsung. It has a 6.8-inch Dynamic AMOLED display, the Exynos 2200 chip, and a quad-camera system with 100x Space Zoom. It also supports 5G and has a 5000mAh battery."
   },
   {
     "id": 3,
     "name": "MacBook Air M2",
     "image": "/asset/download.jpg",
-    "price": 1199.99
+    "price": 1199.99,
+    "description": "The MacBook Air M2 is the latest MacBook model. It has a 13.3-inch Retina display, the M2 chip, and up to 16GB of RAM. It also has a Magic Keyboard, Touch ID, and up to 2TB of storage."
   },
   {
     "id": 4,
     "name": "Sony WH-1000XM5",
     "image": "/asset/download.jpg",
-    "price": 399.99
+    "price": 399.99,
+    "description": "The Sony WH-1000XM5 is the latest wireless noise-canceling headphones from Sony. They have industry-leading noise cancellation, 40mm drivers, and up to 30 hours of battery life. They also support LDAC and have a Speak-to-Chat feature."
   },
   {
     "id": 5,
     "name": "Apple Watch Series 9",
     "image": "/asset/download.jpg",
-    "price": 429.99
+    "price": 429.99,
+    "description": "The Apple Watch Series 9 is the latest smartwatch from Apple. It has an always-on Retina display, the S9 chip, and up to 48 hours of battery life. It also has advanced health features like ECG and blood oxygen monitoring."
   },
   {
     "id": 6,
     "name": "Apple Watch Series 9",
     "image": "/asset/download.jpg",
-    "price": 429.99
+    "price": 429.99,
+    "description": "The Apple Watch Series 9 is the latest smartwatch from Apple. It has an always-on Retina display, the S9 chip, and up to 48 hours of battery life. It also has advanced health features like ECG and blood oxygen monitoring."
   }
 ]

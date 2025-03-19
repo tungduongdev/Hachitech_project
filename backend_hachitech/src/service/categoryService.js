@@ -58,12 +58,21 @@ const updateCategory = async (id, updatedCategory) => {
     throw new Error(error.message || error)
   }
 }
-//xoá category thì xoá cả sp trong đó
+
+const findCategoryByName = async (name) => {
+  try {
+    const category = await categoryModel.findCategoryByName(name)
+    return category
+  } catch (error) {
+    throw new Error(error.message || error)
+  }
+}
 
 export const categoryService = {
   createNew,
   getAll,
   deleteCategory,
   getCategoryById,
-  updateCategory
+  updateCategory,
+  findCategoryByName
 }

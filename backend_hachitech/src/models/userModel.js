@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import Joi from "joi";
 import { GET_DB } from "../configs/mongodb.js";
+import { ObjectId } from "mongodb";
 
 const userRole = {
     ADMIN: "admin",
@@ -17,6 +18,7 @@ const userValidationSchema = Joi.object({
     verifyToken: Joi.string().default(null),
     isActive: Joi.boolean().default(false),
     role: Joi.string().valid(userRole.ADMIN, userRole.USER).default(userRole.USER),
+    imgUrl: Joi.string().default(null),
     createdAt: Joi.date().timestamp("javascript").default(Date.now),
     updatedAt: Joi.date().timestamp("javascript").default(null)
 });
@@ -77,7 +79,7 @@ const findByName = async (username) => {
 
 const findById = async (id) => {
     try {
-        const result = await GET_DB().collection(userCollection).findOne({ _id: id })
+        const result = await GET_DB().collection(userCollection).findOne({ _id: new ObjectId(id) })
         return result;
     } catch (error) {
         throw new Error(`Error finding user: ${error.message}`)

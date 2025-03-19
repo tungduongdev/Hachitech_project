@@ -15,5 +15,7 @@ Router.route('/:id')
   .get(categoryController.getCategoryById)
 Router.route('/update/:id')
   .put(authMiddlewere.isAuthorized,authMiddlewere.isAuthorizedAndAdmin,categoryValidation.updateCategory, categoryController.updateCategory)
+Router.route('/find/:name')
+  .get(categoryController.findCategoryByName)
 
 export const categoryRoute = Router

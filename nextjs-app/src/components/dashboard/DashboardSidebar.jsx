@@ -1,6 +1,6 @@
 'use client'; 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, Layout } from 'antd';
 import {
   HomeOutlined,
@@ -12,8 +12,8 @@ import {
   LogoutOutlined,
 } from '@ant-design/icons';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation'; // Sử dụng next/navigation nếu dùng App Router, ngược lại dùng next/router
-import { toast } from 'react-toastify'; // Import react-toastify
+import { useRouter, usePathname } from 'next/navigation';
+import { toast } from 'react-toastify';
 import { logoutApi } from'@/apis/apis.js'
 
 const { Sider } = Layout;
@@ -52,12 +52,49 @@ const styles = {
 const DashboardSidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+  const [selectedKeys, setSelectedKeys] = useState(['product-list']);
+  const [openKeys, setOpenKeys] = useState(['products']);
+  
+  // Xác định selectedKeys và openKeys dựa trên đường dẫn hiện tại
+  useEffect(() => {
+    if (pathname === '/dashboard') {
+      setSelectedKeys(['product-list']);
+      setOpenKeys(['products']);
+    } else if (pathname === '/') {
+      setSelectedKeys(['dashboard']);
+      setOpenKeys([]);
+    } else if (pathname.includes('/dashboard/products')) {
+      if (pathname.includes('/inventory')) {
+        setSelectedKeys(['product-inventory']);
+      } else if (pathname.includes('/reviews')) {
+        setSelectedKeys(['product-reviews']);
+      } else {
+        setSelectedKeys(['product-list']);
+      }
+      setOpenKeys(['products']);
+    } else if (pathname.includes('/dashboard/categories')) {
+      if (pathname.includes('/settings')) {
+        setSelectedKeys(['category-settings']);
+      } else {
+        setSelectedKeys(['category-list']);
+      }
+      setOpenKeys(['categories']);
+    } else if (pathname.includes('/dashboard/customers')) {
+      setSelectedKeys(['customers']);
+    } else if (pathname.includes('/dashboard/analytics')) {
+      setSelectedKeys(['analytics']);
+    } else if (pathname.includes('/dashboard/settings')) {
+      setSelectedKeys(['settings']);
+    }
+  }, [pathname]);
 
   const handleLogout = async () => {
     try {
       await logoutApi();
       toast.success("Đăng xuất thành công!");
       router.push('/login');
+      console.log("Cookie sau khi logout:", document.cookie); // Kiểm tra cookie trong frontend
     } catch (error) {
       console.error('Error during logout:', error);
       toast.error("Đã có lỗi khi đăng xuất!");
@@ -67,12 +104,27 @@ const DashboardSidebar = () => {
   const onCollapse = (collapsed) => {
     setCollapsed(collapsed);
   };
+  
+  // Xử lý khi người dùng mở/đóng các menu có submenu
+  const handleOpenChange = (keys) => {
+    setOpenKeys(keys);
+  };
+  
+  // Xử lý khi chọn menu item
+  const handleMenuClick = ({ key }) => {
+    setSelectedKeys([key]);
+    
+    // Xử lý routing đặc biệt nếu cần
+    if (key === 'category-list') {
+      router.push('/dashboard/categories');
+    }
+  };
 
   const menuItems = [
     {
       key: 'dashboard',
       icon: <HomeOutlined style={styles.icon} />,
-      label: <Link href="/dashboard" style={styles.menuItem}>Dashboard</Link>,
+      label: <Link href="/" style={styles.menuItem}>Home</Link>,
     },
     {
       key: 'products',
@@ -82,10 +134,6 @@ const DashboardSidebar = () => {
         {
           key: 'product-list',
           label: <Link href="/dashboard">Danh sách sản phẩm</Link>,
-        },
-        {
-          key: 'add-product',
-          label: <Link href="/dashboard/products/add">Thêm sản phẩm mới</Link>,
         },
         {
           key: 'product-inventory',
@@ -105,10 +153,6 @@ const DashboardSidebar = () => {
         {
           key: 'category-list',
           label: <Link href="/dashboard/categories">Danh sách danh mục</Link>,
-        },
-        {
-          key: 'add-category',
-          label: <Link href="/dashboard/categories/add">Thêm danh mục mới</Link>,
         },
         {
           key: 'category-settings',
@@ -152,10 +196,12 @@ const DashboardSidebar = () => {
       </div>
       <Menu
         theme="dark"
-        defaultSelectedKeys={['dashboard']}
-        defaultOpenKeys={['products', 'categories']}
+        selectedKeys={selectedKeys}
+        openKeys={openKeys}
         mode="inline"
         items={menuItems}
+        onClick={handleMenuClick}
+        onOpenChange={handleOpenChange}
       />
     </Sider>
   );

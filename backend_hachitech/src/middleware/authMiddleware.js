@@ -9,15 +9,15 @@ const isAuthorized = async (req, res, next) => {
   // console.log('Cookies:', req.cookies);
   const accessToken = req.cookies?.accessToken
   //console.log('Access Token:', accessToken);
-  // nếu không có access token thì trả về lỗi
   if (!accessToken) {
-    next(new apiError(StatusCodes.UNAUTHORIZED, 'Access token not found'))
-    return
+    req.user = null; // Không có token thì đặt req.user là null và tiếp tục
+    return next();
   }
-
   try {
     // thực hiện giải mã token xem có hợp lệ không
     const accessTokenDecoded = await jwtProvider.verifyToken(accessToken, env.JWT_SECRET)
+    req.user = accessTokenDecoded
+    //console.log("req.user", req.user)
     // lưu thông tin user vào req để sử dụng ở các middleware khác
     req.jwtDecoded = accessTokenDecoded
     next()
